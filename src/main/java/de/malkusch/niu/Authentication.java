@@ -21,12 +21,7 @@ final class Authentication {
         this.account = assertNotEmpty(account, "account must not be empty");
         this.password = assertNotEmpty(password, "password must not be empty");
         this.countryCode = assertNotEmpty(countryCode, "countryCode must not be empty");
-
         this.expirationWindow = requireNonNull(expirationWindow);
-        if (!expirationWindow.isPositive()) {
-            throw new IllegalArgumentException("expirationWindow must be positive");
-        }
-
         this.client = requireNonNull(client);
 
         refreshToken();
