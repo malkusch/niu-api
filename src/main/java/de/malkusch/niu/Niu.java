@@ -48,7 +48,7 @@ public class Niu {
         return stream(response.data).map(it -> new Vehicle(it.sn, it.name)).toArray(Vehicle[]::new);
     }
 
-    record Vehicle(String serialNumber, String name) {
+    public record Vehicle(String serialNumber, String name) {
     }
 
     private static final String BATTERY_INFO_URI = "https://app-api-fk.niu.com/v3/motor_data/battery_info";
@@ -68,7 +68,7 @@ public class Niu {
                 response.data.batteries.compartmentA.temperature, response.data.batteries.compartmentA.gradeBattery);
     }
 
-    record BatteryInfo(boolean isCharging, int charge, int temperature, double grade) {
+    public record BatteryInfo(boolean isCharging, int charge, int temperature, double grade) {
     }
 
     private static final String INFO_URI = "https://app-api-fk.niu.com/v3/motor_data/index_info";
@@ -95,10 +95,10 @@ public class Niu {
     }
 
     public static record VehicleInfo(Battery battery, Position position, int nowSpeed, int shakingValue) {
-        record Battery(boolean isCharging, int charge, double grade) {
+        public record Battery(boolean isCharging, int charge, double grade) {
         }
 
-        record Position(double lat, double lng) {
+        public record Position(double lat, double lng) {
         }
     }
 }
