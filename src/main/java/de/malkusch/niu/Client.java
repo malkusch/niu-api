@@ -45,9 +45,6 @@ final class Client {
 
     public Client(Duration timeout, String userAgent) {
         this.timeout = requireNonNull(timeout);
-        if (!timeout.isPositive()) {
-            throw new IllegalArgumentException("timeout must be positive");
-        }
 
         this.userAgent = requireNonNull(userAgent);
         if (userAgent.isEmpty()) {
