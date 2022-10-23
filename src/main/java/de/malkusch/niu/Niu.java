@@ -55,7 +55,7 @@ public class Niu {
 
     public BatteryInfo batteryInfo(String serialNumber) throws IOException {
         var uri = BATTERY_INFO_URI + "?sn=" + serialNumber;
-        record Response(Data data) {
+        record Response(Data data, int status) {
             record Data(Batteries batteries, boolean isCharging) {
                 record Batteries(Battery compartmentA) {
                     record Battery(int batteryCharging, int temperature, double gradeBattery) {
@@ -65,18 +65,20 @@ public class Niu {
         }
         var response = client.get(Response.class, uri, authentication.token());
         return new BatteryInfo(response.data.isCharging, response.data.batteries.compartmentA.batteryCharging,
-                response.data.batteries.compartmentA.temperature, response.data.batteries.compartmentA.gradeBattery);
+                response.data.batteries.compartmentA.temperature, response.data.batteries.compartmentA.gradeBattery,
+                response.status);
     }
 
-    public record BatteryInfo(boolean isCharging, int charge, int temperature, double grade) {
+    public record BatteryInfo(boolean isCharging, int charge, int temperature, double grade, int status) {
     }
 
     private static final String INFO_URI = "https://app-api-fk.niu.com/v3/motor_data/index_info";
 
     public VehicleInfo vehicle(String serialNumber) throws IOException {
         var uri = INFO_URI + "?sn=" + serialNumber;
-        record Response(Data data) {
-            record Data(Batteries batteries, boolean isCharging, int nowSpeed, int shakingValue, Position postion) {
+        record Response(Data data, int status) {
+            record Data(Batteries batteries, boolean isCharging, int nowSpeed, int shakingValue, Position postion,
+                    int centreCtrlBattery, int gps, int gsm, double leftTime, boolean isConnected, int estimatedMileage ) {
                 record Position(double lat, double lng) {
                 }
 
@@ -91,10 +93,13 @@ public class Niu {
                 new VehicleInfo.Battery(response.data.isCharging, response.data.batteries.compartmentA.batteryCharging,
                         response.data.batteries.compartmentA.gradeBattery),
                 new VehicleInfo.Position(response.data.postion.lat, response.data.postion.lng), response.data.nowSpeed,
-                response.data.shakingValue);
+                response.data.shakingValue, response.data.centreCtrlBattery, response.data.gps, response.data.gsm,
+                response.status, response.data.leftTime, response.data.isConnected, response.data.estimatedMileage);
     }
 
-    public static record VehicleInfo(Battery battery, Position position, int nowSpeed, int shakingValue) {
+    public static record VehicleInfo(Battery battery, Position position, int nowSpeed, int shakingValue,
+            int ecuBatteryCharge, int gps, int gsm, int status, double leftTime, boolean isConnected, int estimatedMileage) {
+
         public record Battery(boolean isCharging, int charge, double grade) {
         }
 
