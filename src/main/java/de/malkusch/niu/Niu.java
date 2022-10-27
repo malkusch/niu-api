@@ -4,6 +4,7 @@ import static java.util.Arrays.stream;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.time.Instant;
 
 public class Niu {
 
@@ -78,7 +79,8 @@ public class Niu {
         var uri = INFO_URI + "?sn=" + serialNumber;
         record Response(Data data, int status) {
             record Data(Batteries batteries, boolean isCharging, int nowSpeed, int shakingValue, Position postion,
-                    int centreCtrlBattery, int gps, int gsm, double leftTime, boolean isConnected, int estimatedMileage ) {
+                    int centreCtrlBattery, int gps, long gpsTimestamp, int gsm, long infoTimestamp, double leftTime,
+                    boolean isConnected, int estimatedMileage, int ss_online_sta) {
                 record Position(double lat, double lng) {
                 }
 
@@ -93,12 +95,19 @@ public class Niu {
                 new VehicleInfo.Battery(response.data.isCharging, response.data.batteries.compartmentA.batteryCharging,
                         response.data.batteries.compartmentA.gradeBattery),
                 new VehicleInfo.Position(response.data.postion.lat, response.data.postion.lng), response.data.nowSpeed,
-                response.data.shakingValue, response.data.centreCtrlBattery, response.data.gps, response.data.gsm,
-                response.status, response.data.leftTime, response.data.isConnected, response.data.estimatedMileage);
+                response.data.shakingValue, response.data.centreCtrlBattery, response.data.gps,
+                timestamp(response.data.gpsTimestamp), response.data.gsm, timestamp(response.data.infoTimestamp),
+                response.status, response.data.leftTime, response.data.isConnected, response.data.estimatedMileage,
+                response.data.ss_online_sta);
+    }
+
+    private static Instant timestamp(long timestamp) {
+        return Instant.ofEpochMilli(timestamp);
     }
 
     public static record VehicleInfo(Battery battery, Position position, int nowSpeed, int shakingValue,
-            int ecuBatteryCharge, int gps, int gsm, int status, double leftTime, boolean isConnected, int estimatedMileage) {
+            int ecuBatteryCharge, int gps, Instant gpsTimestamp, int gsm, Instant gsmTimestamp, int status,
+            double leftTime, boolean isConnected, int estimatedMileage, int ss_online_sta) {
 
         public record Battery(boolean isCharging, int charge, double grade) {
         }
