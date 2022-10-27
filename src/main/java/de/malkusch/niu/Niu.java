@@ -80,7 +80,7 @@ public class Niu {
         record Response(Data data, int status) {
             record Data(Batteries batteries, boolean isCharging, int nowSpeed, int shakingValue, Position postion,
                     int centreCtrlBattery, int gps, long gpsTimestamp, int gsm, long infoTimestamp, double leftTime,
-                    boolean isConnected, int estimatedMileage, int ss_online_sta) {
+                    boolean isConnected, int estimatedMileage, int ss_online_sta, long time) {
                 record Position(double lat, double lng) {
                 }
 
@@ -98,7 +98,7 @@ public class Niu {
                 response.data.shakingValue, response.data.centreCtrlBattery, response.data.gps,
                 timestamp(response.data.gpsTimestamp), response.data.gsm, timestamp(response.data.infoTimestamp),
                 response.status, response.data.leftTime, response.data.isConnected, response.data.estimatedMileage,
-                response.data.ss_online_sta);
+                response.data.ss_online_sta, timestamp(response.data.time));
     }
 
     private static Instant timestamp(long timestamp) {
@@ -107,7 +107,7 @@ public class Niu {
 
     public static record VehicleInfo(Battery battery, Position position, int nowSpeed, int shakingValue,
             int ecuBatteryCharge, int gps, Instant gpsTimestamp, int gsm, Instant gsmTimestamp, int status,
-            double leftTime, boolean isConnected, int estimatedMileage, int ss_online_sta) {
+            double leftTime, boolean isConnected, int estimatedMileage, int ss_online_sta, Instant time) {
 
         public record Battery(boolean isCharging, int charge, double grade) {
         }
