@@ -57,12 +57,16 @@ final class Authentication {
 
     private void refreshToken() throws IOException {
 
-        record Response(Data data) {
+        record Response(Data data, String desc, int status) {
             record Data(String token) {
             }
         }
         var response = client.post(Response.class, LOGIN_URI, new Field("countryCode", countryCode),
                 new Field("account", account), new Field("password", password));
+
+        if (response.status != 0) {
+            throw new IOException(String.format("Can't authenticate: [%d] %s", response.status, response.desc));
+        }
 
         var token = response.data.token;
 
@@ -82,7 +86,7 @@ final class Authentication {
             }
 
         } catch (Exception e) {
-            throw new IOException("Couldn't decode token", e);
+            throw new IOException("Couldn't decode token: " + response.desc, e);
         }
 
         this.token = new Token(token, expiresAt);

@@ -14,6 +14,7 @@ import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.time.Duration;
 
+import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import de.malkusch.niu.Authentication.Token;
@@ -77,15 +78,19 @@ final class Client {
             requestBuilder.setHeader("token", token.value());
         }
         var request = requestBuilder.build();
+        String response = null;
         try {
-            var response = httpClient.send(request, BodyHandlers.ofInputStream());
-            try (var stream = response.body()) {
-                return mapper.readValue(stream, type);
-            }
+            try {
+                response = httpClient.send(request, BodyHandlers.ofString()).body();
+                return mapper.readValue(response, type);
 
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new IOException(e);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new IOException(e);
+
+            }
+        } catch (JacksonException e) {
+            throw new IOException("Failed parsing JSON:\n" + response, e);
         }
     }
 
