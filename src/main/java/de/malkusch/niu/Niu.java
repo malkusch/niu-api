@@ -101,10 +101,6 @@ public class Niu {
                 response.data.ss_online_sta, timestamp(response.data.time));
     }
 
-    private static Instant timestamp(long timestamp) {
-        return Instant.ofEpochMilli(timestamp);
-    }
-
     public static record VehicleInfo(Battery battery, Position position, int nowSpeed, int shakingValue,
             int ecuBatteryCharge, int gps, Instant gpsTimestamp, int gsm, Instant gsmTimestamp, int status,
             double leftTime, boolean isConnected, int estimatedMileage, int ss_online_sta, Instant time) {
@@ -115,4 +111,23 @@ public class Niu {
         public record Position(double lat, double lng) {
         }
     }
+
+    private static final String ODOMETER_URI = "https://app-api-fk.niu.com/motoinfo/overallTally";
+
+    public Odometer odometer(String serialNumber) throws IOException {
+        record Response(Data data, int status) {
+            record Data(int bindDaysCount, double totalMileage) {
+            }
+        }
+        var response = client.post(Response.class, ODOMETER_URI, authentication.token(), new Field("sn", serialNumber));
+        return new Odometer(response.data.bindDaysCount, response.data.totalMileage);
+    }
+
+    public static record Odometer(int days, double mileage) {
+    }
+
+    private static Instant timestamp(long timestamp) {
+        return Instant.ofEpochMilli(timestamp);
+    }
+
 }
