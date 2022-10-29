@@ -45,14 +45,17 @@ final class Client {
     }
 
     public Client(Duration timeout, String userAgent) {
-        this.timeout = requireNonNull(timeout);
+        this(HttpClient.newBuilder().connectTimeout(timeout).build(), userAgent);
+    }
+
+    Client(HttpClient httpClient, String userAgent) {
+        this.httpClient = requireNonNull(httpClient);
+        this.timeout = requireNonNull(httpClient.connectTimeout().get());
 
         this.userAgent = requireNonNull(userAgent);
         if (userAgent.isEmpty()) {
             throw new IllegalArgumentException("userAgent must not be empty");
         }
-
-        httpClient = HttpClient.newBuilder().connectTimeout(timeout).build();
 
         mapper = new ObjectMapper();
         mapper.configure(FAIL_ON_UNKNOWN_PROPERTIES, false);

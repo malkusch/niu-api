@@ -36,7 +36,6 @@ final class Authentication {
     }
 
     record Token(String value, Instant expiresAt) {
-
         boolean isExpired() {
             return Instant.now().isAfter(expiresAt);
         }

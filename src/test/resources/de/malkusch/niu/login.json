@@ -1,0 +1,30 @@
+{
+   "data" : {
+      "token" : "{{token}}",
+      "user" : {
+         "_id" : "any",
+         "auto_id" : "",
+         "bgimg" : "https://download.niucache.com/static/upload/20200507/57f16705-48e9-4080-8246-b2fde8df30b5.jpg",
+         "birthdate" : "",
+         "countryCode" : "",
+         "desc" : "A NIU WAY FORWARD",
+         "emails" : [
+            {
+               "address" : "john@example.org",
+               "verified" : true
+            }
+         ],
+         "headimg" : "https://store-v3.niucache.com/2005b202004291708046291.jpg",
+         "lastname" : "",
+         "mobile" : "",
+         "nickname" : "john",
+         "phone" : "",
+         "realname" : "John",
+         "sex" : 0,
+         "uid" : "any"
+      }
+   },
+   "desc" : "ok",
+   "status" : 0,
+   "trace" : ""
+}
