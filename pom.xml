@@ -2,9 +2,20 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.malkusch.niu</groupId>
 	<artifactId>niu-api</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.3.0-SNAPSHOT</version>
 	<name>NIU</name>
 	<description>NIU API</description>
+
+	<parent>
+		<groupId>de.malkusch.parent</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>3.0.1</version>
+	</parent>
+	<url>https://github.com/malkusch/${project.artifactId}</url>
+	<scm>
+		<connection>scm:git:git://github.com/malkusch/${project.artifactId}.git</connection>
+		<developerConnection>scm:git:git@github.com:malkusch/${project.artifactId}.git</developerConnection>
+	</scm>
 
 	<properties>
 		<maven.compiler.source>17</maven.compiler.source>
