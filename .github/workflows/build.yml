@@ -1,0 +1,9 @@
+name: Build
+on: [push]
+
+jobs:
+  build:
+    uses: malkusch/github/.github/workflows/maven-build.yml@master
+    with:
+      JDK_VERSION: 17
+    secrets: inherit
