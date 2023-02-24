@@ -17,7 +17,7 @@ jobs:
     if: github.ref == 'refs/heads/master'
     uses: malkusch/github/.github/workflows/maven-central-release.yml@master
     with:
-      JDK_VERSION: 17
+      JDK_VERSION: ${{ needs.build.outputs.JDK_VERSION }}
       dry-run: ${{ inputs.dry-run }}
     secrets:
       MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
