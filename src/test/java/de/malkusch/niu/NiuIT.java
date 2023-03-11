@@ -2,6 +2,7 @@ package de.malkusch.niu;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.io.IOException;
 
@@ -19,6 +20,10 @@ public class NiuIT {
 
     @BeforeAll
     static void setupNiu() throws IOException {
+        assumeTrue(ACCOUNT != null);
+        assumeTrue(PASSWORD != null);
+        assumeTrue(COUNTRY_CODE != null);
+        assumeTrue(SN != null);
         niu = new Niu.Builder(ACCOUNT, PASSWORD, COUNTRY_CODE).build();
     }
 
