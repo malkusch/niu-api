@@ -18,6 +18,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandler;
+import java.net.http.HttpTimeoutException;
 import java.time.Duration;
 import java.util.Optional;
 
@@ -86,6 +87,17 @@ public class ClientTest {
         givenException(IOException.class);
 
         assertThrows(IOException.class, () -> {
+            client.post(String.class, ANY_URL);
+        });
+    }
+
+    @ParameterizedTest
+    @MethodSource("ALL_RETRIES")
+    void shouldThrowHttpTimeoutException(Retry.Configuration retry) throws Exception {
+        var client = client(retry);
+        givenException(HttpTimeoutException.class);
+
+        assertThrows(HttpTimeoutException.class, () -> {
             client.post(String.class, ANY_URL);
         });
     }
