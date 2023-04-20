@@ -1,5 +1,6 @@
 package de.malkusch.niu;
 
+import static de.malkusch.niu.Retry.Configuration.DISABLED;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -24,13 +25,14 @@ public class Tests {
         try {
             var httpClient = mock(HttpClient.class);
             when(httpClient.connectTimeout()).thenReturn(Optional.of(Duration.ofMillis(10)));
-            var client = new Client(httpClient, "Any");
+            var client = new Client(httpClient, Retry.build(DISABLED), "Any");
 
             var login = Files.readString(Paths.get(AuthenticationTest.class.getResource("login.json").toURI()))
                     .replace("{{token}}", token);
 
             var response = mock(HttpResponse.class);
             when(response.body()).thenReturn(login);
+            when(response.statusCode()).thenReturn(200);
 
             when(httpClient.send(any(HttpRequest.class), any(BodyHandler.class))).thenReturn(response);
 

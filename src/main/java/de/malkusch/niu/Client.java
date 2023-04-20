@@ -39,18 +39,20 @@ final class Client {
     private final Duration timeout;
     private final HttpClient httpClient;
     private final ObjectMapper mapper;
+    private final Retry<String> retry;
 
-    public Client(Duration timeout) {
-        this(timeout, DEFAULT_USER_AGENT);
+    public Client(Duration timeout, Retry<String> retry) {
+        this(timeout, retry, DEFAULT_USER_AGENT);
     }
 
-    public Client(Duration timeout, String userAgent) {
-        this(HttpClient.newBuilder().connectTimeout(timeout).build(), userAgent);
+    public Client(Duration timeout, Retry<String> retry, String userAgent) {
+        this(HttpClient.newBuilder().connectTimeout(timeout).build(), retry, userAgent);
     }
 
-    Client(HttpClient httpClient, String userAgent) {
+    Client(HttpClient httpClient, Retry<String> retry, String userAgent) {
         this.httpClient = requireNonNull(httpClient);
         this.timeout = requireNonNull(httpClient.connectTimeout().get());
+        this.retry = retry;
 
         this.userAgent = requireNonNull(userAgent);
         if (userAgent.isEmpty()) {
@@ -84,7 +86,7 @@ final class Client {
         String response = null;
         try {
             try {
-                response = httpClient.send(request, BodyHandlers.ofString()).body();
+                response = retry.<IOException, InterruptedException> retry(() -> _send_unsafe(request));
                 return mapper.readValue(response, type);
 
             } catch (InterruptedException e) {
@@ -95,6 +97,18 @@ final class Client {
         } catch (JacksonException e) {
             throw new IOException("Failed parsing JSON:\n" + response, e);
         }
+    }
+
+    private String _send_unsafe(HttpRequest request) throws IOException, InterruptedException {
+        var response = httpClient.send(request, BodyHandlers.ofString());
+
+        return switch (response.statusCode()) {
+        case 200 -> response.body();
+        case 403 -> throw new IOException("Query " + request + " is forbidden");
+        case 404 -> throw new IOException("Query " + request + " was not found");
+        case 500 -> throw new IOException("Query " + request + " resulted in a server error");
+        default -> throw new IOException("Query " + request + " failed with response code " + response.statusCode());
+        };
     }
 
     private HttpRequest.Builder request(String url) {

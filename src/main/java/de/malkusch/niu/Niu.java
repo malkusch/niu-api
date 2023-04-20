@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 
+import de.malkusch.niu.Retry.Configuration;
+
 public class Niu {
 
     private final Client client;
@@ -13,12 +15,14 @@ public class Niu {
 
     public static final class Builder {
         private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(10);
+        private static final Retry.Configuration DEFAULT_RETRY = new Configuration(3, Duration.ofSeconds(10));
 
         private Duration timeout = DEFAULT_TIMEOUT;
         private Duration expirationWindow = timeout.multipliedBy(3);
         private final String account;
         private final String password;
         private final String countryCode;
+        private Retry.Configuration retry = DEFAULT_RETRY;
 
         public Builder(String account, String password, String countryCode) {
             this.account = account;
@@ -26,8 +30,13 @@ public class Niu {
             this.countryCode = countryCode;
         }
 
+        public Builder disabledRetry() {
+            retry = Retry.Configuration.DISABLED;
+            return this;
+        }
+
         public Niu build() throws IOException {
-            var client = new Client(timeout);
+            var client = new Client(timeout, Retry.build(retry));
             var authentication = new Authentication(account, password, countryCode, expirationWindow, client);
             return new Niu(client, authentication);
         }
