@@ -5,6 +5,6 @@ This package is available in Maven central:
 <dependency>
     <groupId>de.malkusch.niu</groupId>
     <artifactId>niu-api</artifactId>
-    <version>0.3.2</version>
+    <version>0.3.3</version>
 </dependency>
 ```
