@@ -102,13 +102,15 @@ final class Client {
     private String _send_unsafe(HttpRequest request) throws IOException, InterruptedException {
         var response = httpClient.send(request, BodyHandlers.ofString());
 
-        return switch (response.statusCode()) {
-        case 200 -> response.body();
-        case 403 -> throw new IOException("Query " + request + " is forbidden");
-        case 404 -> throw new IOException("Query " + request + " was not found");
-        case 500 -> throw new IOException("Query " + request + " resulted in a server error");
-        default -> throw new IOException("Query " + request + " failed with response code " + response.statusCode());
-        };
+        if (response.statusCode() < 100) {
+            throw new IOException("Query " + request + " failed with response code " + response.statusCode());
+
+        } else if (response.statusCode() < 400) {
+            return response.body();
+
+        } else {
+            throw new IOException("Query " + request + " failed with response code " + response.statusCode());
+        }
     }
 
     private HttpRequest.Builder request(String url) {

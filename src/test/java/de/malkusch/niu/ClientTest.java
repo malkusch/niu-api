@@ -91,7 +91,7 @@ public class ClientTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = { 400, 499, 500, 599 })
+    @ValueSource(ints = { 0, 99, 400, 499, 500, 599 })
     void shouldThrowIOExceptionOnHttpError(int error) throws Exception {
         var client = client();
         givenResponse(response("\"Test\"", error));
@@ -99,6 +99,17 @@ public class ClientTest {
         assertThrows(IOException.class, () -> {
             client.post(String.class, ANY_URL);
         });
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 200, 201, 299, 300, 301, 399 })
+    void shouldAcceptSuccessHttpCodes(int status) throws Exception {
+        var client = client();
+        givenResponse(response("\"Test\"", status));
+
+        var response = client.post(String.class, ANY_URL);
+
+        assertEquals("Test", response);
     }
 
     @ParameterizedTest
