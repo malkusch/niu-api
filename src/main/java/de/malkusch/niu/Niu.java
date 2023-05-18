@@ -100,6 +100,9 @@ public class Niu {
             }
         }
         var response = client.get(Response.class, uri, authentication.token());
+        if (response.data.batteries == null) {
+            throw new IOException("data.batteries is missing");
+        }
         return new VehicleInfo(
                 new VehicleInfo.Battery(response.data.isCharging, response.data.batteries.compartmentA.batteryCharging,
                         response.data.batteries.compartmentA.gradeBattery),
