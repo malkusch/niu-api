@@ -1,7 +1,7 @@
 ## Maven
 
 This package is available in Maven central:
-```xml
+```xml maven
 <dependency>
     <groupId>de.malkusch.niu</groupId>
     <artifactId>niu-api</artifactId>
