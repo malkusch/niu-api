@@ -3,8 +3,8 @@
 This package is available in Maven central:
 ```xml maven
 <dependency>
-    <groupId>de.malkusch.niu</groupId>
-    <artifactId>niu-api</artifactId>
-    <version>0.3.3</version>
+  <groupId>de.malkusch.niu</groupId>
+  <artifactId>niu-api</artifactId>
+  <version>0.3.6</version>
 </dependency>
 ```
