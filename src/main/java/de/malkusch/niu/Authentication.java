@@ -67,7 +67,7 @@ final class Authentication {
 
     private final Duration expirationWindow;
     private static final String LOGIN_URI = "https://account-fk.niu.com/v3/api/oauth2/token";
-    private static Duration EXPIRES_AT_FALLBACK = Duration.ofHours(1);
+    private static final Duration EXPIRES_AT_FALLBACK = Duration.ofHours(1);
 
     private void refreshToken() throws IOException {
 

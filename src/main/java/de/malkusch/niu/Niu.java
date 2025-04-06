@@ -135,7 +135,7 @@ public class Niu {
         return new Odometer(response.data.bindDaysCount, response.data.totalMileage);
     }
 
-    public static record Odometer(int days, double mileage) {
+    public record Odometer(int days, double mileage) {
     }
 
     private static Instant timestamp(long timestamp) {
