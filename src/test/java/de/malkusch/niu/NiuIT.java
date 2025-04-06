@@ -43,9 +43,9 @@ public class NiuIT {
 
     @Test
     public void testOdometer() throws IOException {
-        var odemeter = niu.odometer(SN);
+        var odometer = niu.odometer(SN);
 
-        assertTrue(odemeter.mileage() > 0);
+        assertTrue(odometer.mileage() > 0);
     }
 
     @Test

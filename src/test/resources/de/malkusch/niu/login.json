@@ -1,6 +1,9 @@
 {
    "data" : {
-      "token" : "{{token}}",
+      "token" : {
+         "token_expires_in": "{{token_expires_in}}",
+         "access_token": "{{access_token}}"
+      },
       "user" : {
          "_id" : "any",
          "auto_id" : "",

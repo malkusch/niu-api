@@ -17,6 +17,7 @@ import java.time.Duration;
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import de.malkusch.niu.Authentication.Token;
 
 record Field(String name, String value) {
@@ -59,7 +60,7 @@ final class Client {
             throw new IllegalArgumentException("userAgent must not be empty");
         }
 
-        mapper = new ObjectMapper();
+        mapper = new ObjectMapper().registerModule(new JavaTimeModule());
         mapper.configure(FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
