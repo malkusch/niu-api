@@ -1,9 +1,9 @@
 package de.malkusch.niu;
 
-import com.fasterxml.jackson.core.JacksonException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import de.malkusch.niu.Authentication.Token;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.IOException;
 import java.net.URI;
@@ -13,11 +13,11 @@ import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.time.Duration;
 
-import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
 import static java.net.URLEncoder.encode;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.stream;
 import static java.util.Objects.requireNonNull;
+import static tools.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
 
 record Field(String name, String value) {
 
@@ -54,8 +54,7 @@ final class Client {
             throw new IllegalArgumentException("userAgent must not be empty");
         }
 
-        mapper = new ObjectMapper().registerModule(new JavaTimeModule());
-        mapper.configure(FAIL_ON_UNKNOWN_PROPERTIES, false);
+        mapper = JsonMapper.builder().configure(FAIL_ON_UNKNOWN_PROPERTIES, false).build();
     }
 
     public <T> T post(Class<T> type, String url, Field... fields) throws IOException {
@@ -81,7 +80,7 @@ final class Client {
         String response = null;
         try {
             try {
-                response = retry.<IOException, InterruptedException> retry(() -> _send_unsafe(request));
+                response = retry.<IOException, InterruptedException>retry(() -> _send_unsafe(request));
                 return mapper.readValue(response, type);
 
             } catch (InterruptedException e) {
