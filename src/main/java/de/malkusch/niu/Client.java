@@ -17,6 +17,7 @@ import static java.net.URLEncoder.encode;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.stream;
 import static java.util.Objects.requireNonNull;
+import static tools.jackson.databind.DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES;
 import static tools.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
 
 record Field(String name, String value) {
@@ -54,7 +55,10 @@ final class Client {
             throw new IllegalArgumentException("userAgent must not be empty");
         }
 
-        mapper = JsonMapper.builder().configure(FAIL_ON_UNKNOWN_PROPERTIES, false).build();
+        mapper = JsonMapper.builder()
+                .configure(FAIL_ON_UNKNOWN_PROPERTIES, false)
+                .configure(FAIL_ON_NULL_FOR_PRIMITIVES, false)
+                .build();
     }
 
     public <T> T post(Class<T> type, String url, Field... fields) throws IOException {
